@@ -17,9 +17,7 @@ void te_DrawRows(struct TextEditor te) {
     if (filerow >= te.numrows) {
     if (0 ==  te.numrows && (j == y/3)) {
   	char welcome[80];
-	int welcomelen = snprintf(welcome,sizeof(welcome),
-				  "Cold editor -- version %s",
-				  COLD_VERSION);
+	int welcomelen = snprintf(welcome,sizeof(welcome),"Cold editor -- version %s",COLD_VERSION);
 	if (welcomelen > te.width) welcomelen = te.width;
 	int padding = (te.width - welcomelen)/2;
 	if (padding) {
@@ -36,7 +34,7 @@ void te_DrawRows(struct TextEditor te) {
       if (len < 0) len = 0;
       if (len > te.width) len = te.width;
       /* te.row[j].chars[len-1] = '\0'; */
-      printw("%.*s",len,te.row[filerow].render);
+      printw("%.*s",len,&te.row[filerow].render[te.coloff]);
     }
   }
   /* move(te.height,0); */
@@ -58,12 +56,12 @@ void te_Scroll(struct TextEditor *te){
     te->rowoff = te->cy - te->height + 1;
   }
 
-  if (te->cx < te->coloff){
-    te->coloff = te->cx;
+  if (te->rx < te->coloff){
+    te->coloff = te->rx;
   }
 
-  if (te->cx >= te->coloff + te->width){
-    te->coloff = te->cx - te->width + 1;
+  if (te->rx >= te->coloff + te->width){
+    te->coloff = te->rx - te->width + 1;
   }
 }
 
