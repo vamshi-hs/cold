@@ -3,11 +3,25 @@
 #include <string.h>
 #include <stdio.h>
 #include <curses.h>
-
-/* #define COLD_VERSION "0.0.1" */
-#define COLD_TAB_STOP 8
-
 #include "../lib.h"
+
+void erow_insertChar(erow *row,int at,int c){
+  if (at < 0 || at > row->size) at = row->size;
+  row->chars = realloc(row->chars,row->size+2);
+  memmove(&row->chars[at+1],&row->chars[at],(row->size-at)+1);
+  row->size++;
+  row->chars[at]=c;
+  editorUpdateRow(row);
+}
+
+void erow_delChar(struct TextEditor *te,erow *row,int at){
+  if (at < 0 || at >= row->size) return;
+
+  memmove(&row->chars[at],&row->chars[at+1], row->size-at);
+  row->size--;
+  editorUpdateRow(row);
+  te->dirty++;
+}
 
 void editorAppendRow(struct TextEditor *te,char *s,size_t len){
   te->row = realloc(te->row,sizeof(erow) * (te->numrows+1));
@@ -22,6 +36,7 @@ void editorAppendRow(struct TextEditor *te,char *s,size_t len){
 
   editorUpdateRow(&te->row[at]);
   te->numrows++;
+  te->dirty++;
 }
 
 int editorRowCxtoRx(erow *row, int cx){
@@ -33,10 +48,6 @@ int editorRowCxtoRx(erow *row, int cx){
   }
   return rx; 
 }
-
-/* void editorOpen(struct TextEditor *te,char *filename){ */
-  /* free(te->filename) */
-/* } */
 
 void editorUpdateRow(erow *row){
   int tabs = 0;
@@ -81,4 +92,5 @@ void editorOpen(struct TextEditor *te,char *filename){
   }
   free(line);
   fclose(fp);
+  te->dirty = 0;
 }

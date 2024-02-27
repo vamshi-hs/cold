@@ -4,8 +4,9 @@
 
 void displayDrawStatusBar(struct TextEditor te){
   char status[80],rstatus[80];
-  int len = snprintf(status, sizeof(status), "%.20s - %d lines",
-		     te.filename ? te.filename : "[No Name]",te.numrows);
+  int len = snprintf(status, sizeof(status), "%.20s - %d lines %s",
+		     te.filename ? te.filename : "[No Name]",te.numrows
+		     ,te.dirty ? "(modified)" : "");
   int rlen = snprintf(rstatus, sizeof(rstatus), "%d/%d",
 		      te.cy+1,te.numrows);
   move(te.height,0);

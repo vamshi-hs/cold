@@ -3,15 +3,12 @@
 #ifndef TE
 #define TE
 
-/* typdef struct; erow; */
-
 typedef struct erow {
   int size;
   int rsize;
   char *chars;
   char *render;
 } erow;
-
 
 struct TextEditor{
   int cx,cy;
@@ -21,6 +18,7 @@ struct TextEditor{
   int height;
   int width;
   erow *row;
+  int dirty;
   int numrows;
   char *filename;
   char statusmsg[80];
@@ -29,4 +27,5 @@ struct TextEditor{
 
 #define CTRL_KEY(x)  ((x) & 0x1f)
 #define COLD_VERSION "0.0.1"
+#define COLD_TAB_STOP 8
 #endif //TE

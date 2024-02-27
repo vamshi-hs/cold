@@ -1,7 +1,7 @@
 #include <curses.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+// rgv ddfdfkdlk
 #include "./keypress/keypress.h"
 #include "./erow/erow.h"
 #include "./display/display.h"
@@ -21,6 +21,7 @@ void te_initEditor(struct TextEditor *te){
   te->rowoff = 0;
   te->coloff = 0;
   te->rx = 0;
+  te->dirty = 0;
   te->filename = NULL;
   te->statusmsg[0] = '\0';
   te->statusmsg_time = 0;
@@ -42,7 +43,8 @@ int main(int argc, char *argv[]){
   if (argc >= 2){
     editorOpen(&te,argv[1]);
   }
-  editorSetStatusMessage(&te,"HELP: Ctrl-Q = quit");
+  
+  editorSetStatusMessage(&te,"HELP: Ctrl-S = save | Ctrl-Q = quit");
   
   while(1){
     te_Scroll(&te);
