@@ -12,10 +12,10 @@ typedef struct erow {
 
 struct TextEditor{
   int cx,cy;
+  int rowoff;
   int height;
   int width;
   erow *row;
-  
   int numrows;
 };
 

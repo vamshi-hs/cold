@@ -15,7 +15,7 @@ void te_move_cursor(struct TextEditor *te,const int key){
     break;
   case KEY_DOWN:
   case 's':
-    if (te->cy < te->height-1) te->cy++;
+    if (te->cy < te->numrows) te->cy++;
     break;
   case KEY_RIGHT:
   case 'd':
