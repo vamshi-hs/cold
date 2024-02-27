@@ -6,13 +6,17 @@
 
 typedef struct erow {
   int size;
+  int rsize;
   char *chars;
-}erow;
+  char *render;
+} erow;
 
 
 struct TextEditor{
   int cx,cy;
+  int rx;
   int rowoff;
+  int coloff;
   int height;
   int width;
   erow *row;

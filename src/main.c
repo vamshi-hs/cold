@@ -32,22 +32,38 @@ void te_DrawRows(struct TextEditor te) {
 	printw("%c",'~'); 
       }
     } else {
-      int len = te.row[filerow].size;
+      int len = te.row[filerow].rsize - te.coloff;
+      if (len < 0) len = 0;
       if (len > te.width) len = te.width;
-      /* te.row[j].chars[len] = '\0'; */
-      printw("%s",te.row[filerow].chars);
+      /* te.row[j].chars[len-1] = '\0'; */
+      printw("%.*s",len,te.row[filerow].render);
     }
   }
+  /* move(te.height,0); */
+  /* printw("coloff: %d",te.coloff); */
+	 /* - te.coloff); */
+	 /* te.row[filerow].render); */
 }
 
 void te_Scroll(struct TextEditor *te){
+  te->rx = te->cx;
+  if (te->cy < te->numrows)
+    te->rx = editorRowCxtoRx(&te->row[te->cy],te->cx);
+  
   if (te->cy < te->rowoff){
     te->rowoff = te->cy;
-    /* te->rowoff = 0; */
   }
 
   if (te->cy >= te->rowoff + te->height){
     te->rowoff = te->cy - te->height + 1;
+  }
+
+  if (te->cx < te->coloff){
+    te->coloff = te->cx;
+  }
+
+  if (te->cx >= te->coloff + te->width){
+    te->coloff = te->cx - te->width + 1;
   }
 }
 
@@ -55,7 +71,7 @@ void te_RefreshScreen(const struct TextEditor te){
   refresh();
   clear();
   te_DrawRows(te);
-  move(te.cy-te.rowoff,te.cx);
+  move(te.cy-te.rowoff,te.rx-te.coloff);
 }
 
 void te_initEditor(struct TextEditor *te){
@@ -70,6 +86,8 @@ void te_initEditor(struct TextEditor *te){
   te->width = width;
   te->numrows = 0;
   te->rowoff = 0;
+  te->coloff = 0;
+  te->rx = 0;
 }
 
 int main1(int argc, char *argv[]){

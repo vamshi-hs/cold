@@ -3,6 +3,7 @@
 #include "../erow/erow.h"
 
 void te_move_cursor(struct TextEditor *te,const int key){
+  erow *row = (te->cy >= te->numrows) ? NULL : &te->row[te->cy];
   int ch = key;
   switch(ch) {
   case KEY_LEFT:
@@ -19,9 +20,19 @@ void te_move_cursor(struct TextEditor *te,const int key){
     break;
   case KEY_RIGHT:
   case 'd':
-    if (te->cx < te->width-1) te->cx++;
+    if (row && te->cx < row->size) {
+      te->cx++;
+    }
+    else if (row && te->cx == row->size){
+      te->cy++;
+      te->cx = 0;
+    }
     break;
   }
+
+  row = (te->cy >= te->numrows) ? NULL : &te->row[te->cy];
+  int rowlen = row ? row->size : 0;
+  if (te->cx > rowlen) te->cx = rowlen;
 }
 
 int te_ProcessKeypress(struct TextEditor *te){
