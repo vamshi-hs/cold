@@ -44,15 +44,30 @@ int te_ProcessKeypress(struct TextEditor *te){
       case KEY_NPAGE:
       case KEY_PPAGE:
 	{
-	  int times = te->width;
+	  if (c == KEY_PPAGE){
+	    te->cy = te->rowoff;
+	  } else if (c == KEY_NPAGE){
+	    te->cy = te->rowoff + te->height - 1;
+	    if (te->cy > te->numrows) te->cy = te->numrows;
+	  }
+	  int times = te->height;
 	  while(times--)
-	    te_move_cursor(te,c == KEY_PPAGE ? KEY_UP : KEY_DOWN);
+	    te_move_cursor(te, c== KEY_PPAGE ? KEY_UP: KEY_DOWN);
+	  /* if (c = KEY_PPAGE){ */
+	    /* te->cy = te->rowoff; */
+	  /* } */
+	  /* int times = te->height; */
+	  /* while(times--) */
+	    /* te_move_cursor(te,c == KEY_PPAGE ? KEY_UP : KEY_DOWN); */
 	}
+	break;
       case KEY_HOME:
 	te->cx = 0;
 	break;
       case KEY_END:
-	te->cx = te->width - 1;
+	if (te->cy < te->numrows)
+	  te->cx = te->row[te->cy].size;
+	/* te->cx = te->width - 1; */
 	break;
       case 'w':
       case 's':

@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <curses.h>
 
-#define COLD_VERSION "0.0.1"
+/* #define COLD_VERSION "0.0.1" */
 #define COLD_TAB_STOP 8
 
 #include "../lib.h"
@@ -34,6 +34,10 @@ int editorRowCxtoRx(erow *row, int cx){
   return rx; 
 }
 
+/* void editorOpen(struct TextEditor *te,char *filename){ */
+  /* free(te->filename) */
+/* } */
+
 void editorUpdateRow(erow *row){
   int tabs = 0;
   for (int j = 0; j < row->size;j++)
@@ -56,6 +60,9 @@ void editorUpdateRow(erow *row){
 }
 
 void editorOpen(struct TextEditor *te,char *filename){
+  free(te->filename);
+  te->filename = strdup(filename);
+  
   FILE *fp = fopen(filename,"r");
   if (!fp) {
     refresh();
