@@ -14,9 +14,23 @@ void erow_insertChar(erow *row,int at,int c){
   editorUpdateRow(row);
 }
 
+void erow_freeRow(erow *row){
+  free(row->chars);
+  free(row->render);
+}
+
+void erow_appendString(struct TextEditor *te,erow *row,char *s,size_t len){
+  row->chars = realloc(row->chars,row->size+len+1);
+  memcpy(&row->chars[row->size],s,len);
+  row->size += len;
+  row->chars[row->size] = '\0';
+  editorUpdateRow(row);
+  te->dirty++;
+}
+
 void erow_delChar(struct TextEditor *te,erow *row,int at){
   if (at < 0 || at >= row->size) return;
-
+  
   memmove(&row->chars[at],&row->chars[at+1], row->size-at);
   row->size--;
   editorUpdateRow(row);
@@ -88,7 +102,7 @@ void editorOpen(struct TextEditor *te,char *filename){
     while (linelen > 0 && (line[linelen - 1] == '\n' ||
 			   line[linelen - 1] == '\r'))
       linelen--;
-    editorAppendRow(te,line,linelen);
+    editorInsertRow(te,te->numrows,line,linelen);
   }
   free(line);
   fclose(fp);

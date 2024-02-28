@@ -7,7 +7,7 @@ say_bye:
 CC = gcc
 
 cold_run: ./src/main.c
-	@${CC} ./src/main.c ./src/erow/erow.c ./src/display/display.c ./src/editor/editor.c  ./src/keypress/keypress.c -o cold -lcurses
+	@${CC} ./src/main.c ./src/erow/erow.c ./src/input/input.c ./src/display/display.c ./src/editor/editor.c  ./src/keypress/keypress.c -o cold -lcurses
 	@./cold ./src/main.c
 
 .DEFAULT_GOAL := cold_run

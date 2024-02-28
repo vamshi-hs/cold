@@ -1,5 +1,6 @@
 #include "../lib.h"
 #include "../erow/erow.h"
+#include "../input/input.h"
 #include <fcntl.h>
 #include <string.h>
 #include <errno.h>
@@ -7,10 +8,66 @@
 
 void editorInsertChar(struct TextEditor *te, int c){
   if (te->cy == te->numrows)
-    editorAppendRow(te,"",0);
+    editorInsertRow(te,te->numrows,"",0);
   erow_insertChar(&te->row[te->cy],te->cx,c);
   te->cx++;
   te->dirty++;
+}
+
+void editorDelChar(struct TextEditor *te){
+  if (te->cy == te->numrows) return;
+  if (te->cy == 0 && te->cx == 0) return;
+
+  erow *row = &te->row[te->cy];
+  if (te->cx > 0){
+    erow_delChar(te,row,te->cx-1);
+    te->cx--;
+  } else {
+    te->cx = te->row[te->cy-1].size;
+    erow_appendString(te,&te->row[te->cy-1],row->chars,row->size);
+    editorDelRow(te,te->cy);
+    te->cy--;
+  }
+}
+
+void editorInsertRow(struct TextEditor *te,int at,char *s,size_t len){
+  if (at < 0 || at > te->numrows) return;
+
+  te->row = realloc(te->row,sizeof(erow) * (te->numrows+1));
+  memmove(&te->row[at+1],&te->row[at],sizeof(erow) * (te->numrows - at));
+  te->row[at].chars = malloc(len+1);
+  te->row[at].size = len;
+  memcpy(te->row[at].chars,s,len);
+  te->row[at].chars[len] = '\0';
+
+  te->row[at].rsize = 0;
+  te->row[at].render = NULL;
+  editorUpdateRow(&te->row[at]);
+  te->numrows++;
+  te->dirty++;
+}
+
+void editorDelRow(struct TextEditor *te,int at){
+  if (at < 0 || at > te->numrows) return;
+  erow_freeRow(&te->row[at]);
+  memmove(&te->row[at],&te->row[at+1],sizeof(erow) * (te->numrows+1));
+  te->numrows--;
+  te->dirty++;
+}
+
+void editorInsertNewline(struct TextEditor *te){
+  if (te->cx == 0){
+    editorInsertRow(te,te->cy,"",0);
+  } else {
+    erow *row = &te->row[te->cy];
+    editorInsertRow(te,te->cy+1,&row->chars[te->cx],row->size - te->cx);
+    row = &te->row[te->cy];
+    row->size = te->cx;
+    row->chars[row->size] ='\0';
+    editorUpdateRow(row);
+  }
+  te->cy++;
+  te->cx = 0;
 }
 
 char *editorRowsToString(struct TextEditor te,int *buflen){
@@ -32,7 +89,13 @@ char *editorRowsToString(struct TextEditor te,int *buflen){
 }
 
 void editorSave(struct TextEditor *te){
-  if (te->filename == NULL) return;
+  if (te->filename == NULL) {
+    te->filename = editorPrompt(te,"Save as %s");
+    if (te->filename == NULL){
+      editorSetStatusMessage(te,"Save aborted");
+      return;
+    }
+  }
 
   int len;
   char *buf = editorRowsToString(*te,&len);

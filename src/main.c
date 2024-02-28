@@ -25,7 +25,7 @@ void te_initEditor(struct TextEditor *te){
   te->filename = NULL;
   te->statusmsg[0] = '\0';
   te->statusmsg_time = 0;
-    te->numrows = 0;
+  te->numrows = 0;
 }
 
 int main(int argc, char *argv[]){
@@ -37,9 +37,7 @@ int main(int argc, char *argv[]){
   cbreak();
   keypad(stdscr, TRUE);
 
-  
   te_initEditor(&te);
-  
   if (argc >= 2){
     editorOpen(&te,argv[1]);
   }

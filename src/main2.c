@@ -9,46 +9,53 @@ int main() {
     int rows, cols;
     getmaxyx(stdscr, rows, cols);
 
-    WINDOW *win = newwin(rows - 1, cols, 0, 0); // Create a new window
-    scrollok(win, TRUE); // Allow scrolling in window
+    /* WINDOW *win = newwin(rows - 1, cols, 0, 0); // Create a new window */
+    /* scrollok(win, TRUE); // Allow scrolling in window */
     /* wrefresh(win); */
     // Print some lines to the window
     // Loop to handle user input
     /* wmove(win,10,0); */
     /* displayTest(&win); */
-  wrefresh(win);
-  for (int i = 0; i < 100; i++) {
-    wprintw(win, "Line %d\n", i);
-  }
+  /* wrefresh(win); */
+  /* for (int i = 0; i < 100; i++) { */
+    /* wprintw(win, "Line %d\n", i); */
+  /* } */
 
     char ch;
-    while ((ch = wgetch(win)) != 'q') {
-  wrefresh(win);
-  for (int i = 0; i < 100; i++) {
-    wprintw(win, "Line %d\n", i);
-  }
+    while ((ch = getch()) != 'q') {
+      printw("%c",ch);
+      
+  /* wrefresh(win); */
+  /* for (int i = 0; i < 100; i++) { */
+    /* wprintw(win, "Line %d\n", i); */
+  /* } */
 
       /* displayTest(&win); */
       int key = ch;
       switch(key) {
-      case 'd':
-	wscrl(win, -1);
-	break;
-      case 'f':
-	wscrl(win, 1);
-	break;
-      case KEY_UP:
+      case '\n':
+	printw("pressed enter");
+      case 'e':
+	printw("pressed e");
+
+      /* case 'd': */
+	/* wscrl(win, -1); */
+	/* break; */
+      /* case 'f': */
+	/* wscrl(win, 1); */
+	/* break; */
+      /* case KEY_UP: */
 	// Scroll up by one line
-	if (!wscrl(win, -1)) break;
-	break;
-      case KEY_DOWN:
+	/* if (!wscrl(win, -1)) break; */
+	/* break; */
+      /* case KEY_DOWN: */
 	// Scroll down by one line
-	wscrl(win, 1);
-	break;
+	/* wscrl(win, 1); */
+	/* break; */
       }
       // Refresh the window to show changes after scrolling
     }
-    delwin(win);
+    /* delwin(win); */
     endwin(); // End curses mode
     return 0;
 }

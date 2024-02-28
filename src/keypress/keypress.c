@@ -8,7 +8,14 @@ void te_move_cursor(struct TextEditor *te,const int key){
   int ch = key;
   switch(ch) {
   case KEY_LEFT:
-    if (te->cx > 0) te->cx--;
+    if (te->cx == 0) {
+      if (te->cy > 0) {
+	      te->cx = te->row[te->cy-1].size;
+	      te->cy--;
+      }
+    } else {
+      te->cx--; 
+    }
     break;
   case KEY_UP:
     if (te->cy > 0) te->cy--;
@@ -34,9 +41,19 @@ void te_move_cursor(struct TextEditor *te,const int key){
 
 int te_ProcessKeypress(struct TextEditor *te){
       int c = getch();
+      /* printw("char: %c",c); */
       switch(c){
-      case KEY_ENTER:
+      case '\n':
+	editorInsertNewline(te);
 	break;
+      /* case '\x1b': */
+	/* te_move_cursor(te,KEY_RIGHT); */
+	/* break; */
+      case KEY_ENTER:
+	te_move_cursor(te,KEY_RIGHT);
+	/* return 1; */
+      /* editorInsertNewline(te); */
+      break;
       case CTRL_KEY('q'):
 	return 1;
 	break;
@@ -67,8 +84,8 @@ int te_ProcessKeypress(struct TextEditor *te){
       case KEY_BACKSPACE:
       case CTRL_KEY('h'):
       case KEY_DC:
-	te_move_cursor(te,KEY_LEFT);
-	erow_delChar(te,&te->row[te->cy],te->cx);
+	if (c == KEY_DC) te_move_cursor(te,KEY_RIGHT);
+	editorDelChar(te);
 	break;
       case KEY_UP:
       case KEY_RIGHT:
