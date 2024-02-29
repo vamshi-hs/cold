@@ -8,4 +8,5 @@ void editorAppendRow(struct TextEditor *te,char *s,size_t len);
 void editorUpdateRow(erow *row);
 int editorRowCxtoRx(erow *row, int cx);
 void erow_insertChar(erow *row,int at,int c);
+int editorRowRxtoCx(erow *row, int rx);
 #endif //EROW

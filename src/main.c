@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
     editorOpen(&te,argv[1]);
   }
   
-  editorSetStatusMessage(&te,"HELP: Ctrl-S = save | Ctrl-Q = quit");
+  editorSetStatusMessage(&te,"HELP: Ctrl-S = save | Ctrl-Q = quit | Ctrl-F = find");
   
   while(1){
     te_Scroll(&te);

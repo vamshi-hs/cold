@@ -90,7 +90,7 @@ char *editorRowsToString(struct TextEditor te,int *buflen){
 
 void editorSave(struct TextEditor *te){
   if (te->filename == NULL) {
-    te->filename = editorPrompt(te,"Save as %s");
+    te->filename = editorPrompt(te,"Save as %s (ESC to cancel)",NULL);
     if (te->filename == NULL){
       editorSetStatusMessage(te,"Save aborted");
       return;

@@ -58,9 +58,22 @@ int editorRowCxtoRx(erow *row, int cx){
   for (int j = 0; j < cx; j++){
     if (row->chars[j] == '\t')
       rx += (COLD_TAB_STOP - 1) - (rx % COLD_TAB_STOP);
-      rx++;
+    rx++;
   }
   return rx; 
+}
+
+int editorRowRxtoCx(erow *row, int rx){
+  int cur_rx = 0;
+  int cx = 0;
+  for (cx = 0; cx < row->size; cx++){
+    if (row->chars[cx] == '\t')
+      cur_rx += (COLD_TAB_STOP - 1) - (rx % COLD_TAB_STOP);
+    cur_rx++;
+
+    if (cur_rx > rx) return cx;
+  }
+  return cx; 
 }
 
 void editorUpdateRow(erow *row){

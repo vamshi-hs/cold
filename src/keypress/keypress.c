@@ -1,6 +1,7 @@
 #include <curses.h>
 #include "../lib.h"
 #include "../erow/erow.h"
+#include "../find/find.h"
 #include "../editor/editor.h"
 
 void te_move_cursor(struct TextEditor *te,const int key){
@@ -41,21 +42,20 @@ void te_move_cursor(struct TextEditor *te,const int key){
 
 int te_ProcessKeypress(struct TextEditor *te){
       int c = getch();
-      /* printw("char: %c",c); */
+
       switch(c){
       case '\n':
 	editorInsertNewline(te);
 	break;
-      /* case '\x1b': */
-	/* te_move_cursor(te,KEY_RIGHT); */
-	/* break; */
       case KEY_ENTER:
 	te_move_cursor(te,KEY_RIGHT);
-	/* return 1; */
-      /* editorInsertNewline(te); */
-      break;
+	break;
       case CTRL_KEY('q'):
 	return 1;
+	break;
+      case CTRL_KEY('f'):
+	editorFind(te);
+	/* editorSave(te); */
 	break;
       case CTRL_KEY('s'):
 	editorSave(te);
