@@ -2,18 +2,19 @@
 #include <string.h>
 #include "../lib.h"
 
-void displayDrawStatusBar(struct TextEditor te){
+void displayDrawStatusBar(const struct TextEditor te){
   char status[80],rstatus[80];
   int len = snprintf(status, sizeof(status), "%.20s - %d lines %s",
 		     te.filename ? te.filename : "[No Name]",te.numrows
 		     ,te.dirty ? "(modified)" : "");
   int rlen = snprintf(rstatus, sizeof(rstatus), "%d/%d",
 		      te.cy+1,te.numrows);
-  move(te.height,0);
+  move(te.height,len);
   if (len > te.width) len = te.width;
   start_color();
   init_pair(1,COLOR_BLACK,COLOR_WHITE);
   attron(COLOR_PAIR(1));
+  // printw("%s","emacs");
   while(len < te.width){
     if (te.width - len == rlen) {
       printw("%.*s",rlen,rstatus);
@@ -29,7 +30,7 @@ void displayDrawStatusBar(struct TextEditor te){
   attroff(COLOR_PAIR(1));
 }
 
-void editorDrawMessage(struct TextEditor te){
+void editorDrawMessage(const struct TextEditor te){
   int msglen = strlen(te.statusmsg);
   if (msglen > te.width) msglen = te.width;
   if (msglen && time(NULL) - te.statusmsg_time < 5)
@@ -44,7 +45,7 @@ void editorSetStatusMessage(struct TextEditor *te,const char *fmt, ...){
   te->statusmsg_time = time(NULL);
 }
 
-void te_DrawRows(struct TextEditor te){
+void te_DrawRows(const struct TextEditor te){
   int y = te.height;
   for (int j = 0; j < y; j++){
     int filerow = j + te.rowoff;

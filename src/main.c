@@ -1,7 +1,6 @@
 #include <curses.h>
 #include <stdio.h>
 #include <stdlib.h>
-// rgv ddfdfkdlk
 #include "./keypress/keypress.h"
 #include "./erow/erow.h"
 #include "./display/display.h"

@@ -1,6 +1,7 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../editor/editor.h"
 #include <stdio.h>
 #include <curses.h>
 #include "../lib.h"

@@ -1,34 +1,14 @@
 #include "../lib.h"
 #include "../erow/erow.h"
 #include "../input/input.h"
+#include "../display/display.h"
 #include <fcntl.h>
+#include <unistd.h>
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
-
-void editorInsertChar(struct TextEditor *te, int c){
-  if (te->cy == te->numrows)
-    editorInsertRow(te,te->numrows,"",0);
-  erow_insertChar(&te->row[te->cy],te->cx,c);
-  te->cx++;
-  te->dirty++;
-}
-
-void editorDelChar(struct TextEditor *te){
-  if (te->cy == te->numrows) return;
-  if (te->cy == 0 && te->cx == 0) return;
-
-  erow *row = &te->row[te->cy];
-  if (te->cx > 0){
-    erow_delChar(te,row,te->cx-1);
-    te->cx--;
-  } else {
-    te->cx = te->row[te->cy-1].size;
-    erow_appendString(te,&te->row[te->cy-1],row->chars,row->size);
-    editorDelRow(te,te->cy);
-    te->cy--;
-  }
-}
+#include <stdarg.h>
+#include <stdio.h>
 
 void editorInsertRow(struct TextEditor *te,int at,char *s,size_t len){
   if (at < 0 || at > te->numrows) return;
@@ -47,12 +27,36 @@ void editorInsertRow(struct TextEditor *te,int at,char *s,size_t len){
   te->dirty++;
 }
 
+void editorInsertChar(struct TextEditor *te, int c){
+  if (te->cy == te->numrows)
+    editorInsertRow(te,te->numrows,"",0);
+  erow_insertChar(&te->row[te->cy],te->cx,c);
+  te->cx++;
+  te->dirty++;
+}
+
 void editorDelRow(struct TextEditor *te,int at){
   if (at < 0 || at > te->numrows) return;
   erow_freeRow(&te->row[at]);
   memmove(&te->row[at],&te->row[at+1],sizeof(erow) * (te->numrows+1));
   te->numrows--;
   te->dirty++;
+}
+
+void editorDelChar(struct TextEditor *te){
+  if (te->cy == te->numrows) return;
+  if (te->cy == 0 && te->cx == 0) return;
+
+  erow *row = &te->row[te->cy];
+  if (te->cx > 0){
+    erow_delChar(te,row,te->cx-1);
+    te->cx--;
+  } else {
+    te->cx = te->row[te->cy-1].size;
+    erow_appendString(te,&te->row[te->cy-1],row->chars,row->size);
+    editorDelRow(te,te->cy);
+    te->cy--;
+  }
 }
 
 void editorInsertNewline(struct TextEditor *te){

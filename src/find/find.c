@@ -46,7 +46,7 @@ void editorFind(struct TextEditor *te){
   int saved_cy = te->cy;
   int saved_coloff = te->coloff;
   int saved_rowoff = te->rowoff;
-  char *query = editorPrompt(te,"Search: %s (ESC/Arrows/Enter)",editorFindCallBack);
+  char *query = editorPrompt((struct TextEditor *)te,"Search: %s (ESC/Arrows/Enter)",editorFindCallBack);
 
   if (query){
     free(query);
@@ -57,4 +57,3 @@ void editorFind(struct TextEditor *te){
     te->rowoff = saved_rowoff;
   }
 }
-
